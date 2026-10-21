@@ -43,38 +43,49 @@ public:
         return dueDate;
     }
 
-    virtual void checkOut(){
-        cout<<getTitle()<<endl;
-    }
-    virtual void returnItem(){
-        cout<<getTitle()<<endl;
-    }
-    virtual void displayDetails()
-    {
-        cout << getTitle() << endl;
-        cout << getAuthor() << endl;
-        cout << getDueDate() << endl;
-    }
+    virtual void checkOut() = 0;
+    virtual void returnItem() = 0;
+    virtual void displayDetails() = 0;
+
 };
 class Book : public LibraryItem
 {
-    public:
-    Book(string t, string a, string d) : LibraryItem(t, a, d)
+private:
+    string ISBN;
+    int quantity;
+
+public:
+    Book(string t, string a, string d, string isbn, int q) : LibraryItem(t, a, d)
     {
+        ISBN = isbn;
+        quantity = q;
+
+        if (quantity <= 0)
+        {
+            cout << "Invalid quantity" << endl;
+        }
+        if (ISBN.length()!= 13)
+        {
+            cout << "ISBN must contain 13 characters" << endl;
+        }
     }
-    void checkOut() override{
-        cout<<getTitle()<<endl;
+    void checkOut()override{
+        cout<<"Book checked out: "<<getTitle()<<endl;
     }
-    void returnItem() override{
-        cout<<getTitle()<<endl;
+    void returnItem()override{
+        cout<<"Book returned: "<<getTitle()<<endl;
     }
-    void displayDetails() override
-    {
-        cout << getTitle() << endl;
-        cout << getAuthor() << endl;
-        cout << getDueDate() << endl;
+    void displayDetails()override{
+        cout<<"---Book Details---"<<endl;
+        cout << "Title: " << getTitle() << endl;
+        cout << "Author: " << getAuthor() << endl;
+        cout << "Due Date: " << getDueDate() << endl;
+        cout << "ISBN: " << ISBN << endl;
+        cout << "Quantity: " << quantity << endl;
     }
+    
 };
+
 class DVD : public LibraryItem
 {
 private:
@@ -89,18 +100,21 @@ public:
     {
         return duration;
     }
-    void checkOut() override{
-        cout<<getTitle()<<endl;
+    void checkOut() override
+    {
+        cout << "DVD checked out: " << getTitle() << endl;
     }
-    void returnItem() override{
-        cout<<getTitle()<<endl;
+    void returnItem() override
+    {
+        cout << "DVD returned: " << getTitle() << endl;
     }
     void displayDetails() override
     {
-        cout << getTitle() << endl;
-        cout << getAuthor() << endl;
-        cout << getDueDate() << endl;
-        cout << getduration() << endl;
+        cout << "---DVD Details---" << endl;
+        cout << "Title: " << getTitle() << endl;
+        cout << "Author: " << getAuthor() << endl;
+        cout << "Due Date: " << getDueDate() << endl;
+        cout << "Duration: " << getduration() << endl;
     }
 };
 class Magazine : public LibraryItem
@@ -111,75 +125,139 @@ private:
 public:
     Magazine(string t, string a, string d, int num) : LibraryItem(t, a, d)
     {
-        issueNumber=num;
+        issueNumber = num;
     }
-    int getissueNumber(){
+    int getIssueNumber()
+    {
         return issueNumber;
     }
-    void checkOut() override{
-        cout<<getTitle()<<endl;
+    void checkOut() override
+    {
+        cout << "Magazine checked out: " << getTitle() << endl;
     }
-    void returnItem() override{
-        cout<<getTitle()<<endl;
+    void returnItem() override
+    {
+
+        cout << "Magazine returned: " << getTitle() << endl;
     }
     void displayDetails() override
     {
-        cout << getTitle() << endl;
-        cout << getAuthor() << endl;
-        cout << getDueDate() << endl;
-        cout << getissueNumber() << endl;
+        cout << "---Magazine Details---" << endl;
+        cout << "Title: " << getTitle() << endl;
+        cout << "Author: " << getAuthor() << endl;
+        cout << "Due Date: " << getDueDate() << endl;
+        cout << "Issue Number: " << getIssueNumber() << endl;
     }
 };
 int main()
 {
-    int MAX_ITEMS=100;
-    int choice,count=0;
+    int MAX_ITEMS = 100;
+    int choice, count = 0;
     LibraryItem* libraryItems[MAX_ITEMS];
 
-    
+    do
+    {
+        cout << "---Library Management System---" << endl;
+        cout << "1. Add a book" << endl;
+        cout << "2. Add a DVD" << endl;
+        cout << "3. Add a magazine" << endl;
+        cout << "4. Display All Items" << endl;
+        cout << "5. Checkout an item" << endl;
+        cout << "6. Return an Item" << endl;
+        cout << "0. Exit" << endl;
 
-do{
-    cout << "---Library Management System---" << endl;
-    cout << "1. Add a book: " << endl;
-    cout << "2. Add a DVD: " << endl;
-    cout << "3. Add a magazine: " << endl;
-    cout<<"4. Add for checkout: "<<endl;
-    cout<<"5. Add for return: "<<endl;
-    cout<<"6. Add for display: "<<endl;
-    cout<<"7. Exit"<<endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
 
-    cout << "Enter your choice: " << endl;
-    cin >> choice;
+        if (choice == 1)
+        {
+            string t, a, d, isbn;
+            int q;
+            cout << "Enter the title: ";
+            cin.ignore();
+            getline(cin, t);
 
-    if(choice==1){
-        string t,a,d;
-        cout<<"Enter the title: "<<endl;
-        cin.ignore();
-        getline(cin,t);
-        
-        cout<<"Enter the Author name: "<<endl;
-        getline(cin,a);
+            cout << "Enter the Author name: ";
+            getline(cin, a);
 
-        cout<<"Enter the duedate: "<<endl;
-        getline(cin,d);
+            cout << "Enter the duedate: ";
+            getline(cin, d);
 
-        libraryItems[count]=new Book(t,a,d);
-    }
-    else if(choice==2){
-        int duration;
-        cout<<"Enter DVD duration in minutes: "<<endl;
-        cin>>duration;
-        cin.ignore();
-       
+            cout << "Enter the ISBN number: ";
+            getline(cin, isbn);
 
-    }
-    else if(choice==3){
+            cout << "Enter the quantity: ";
+            cin >> q;
 
-    }
+            libraryItems[count++] = new Book(t, a, d, isbn, q);
+            cout << "Book Added Successfully!"<<endl;;
+        }
+        else if (choice == 2)
+        {
+            string t, a, d;
+            int duration;
+            cout << "Enter the title: ";
+            cin.ignore();
+            getline(cin, t);
 
-   }
-   while(choice!=0);
+            cout << "Enter the Author name: ";
+            getline(cin, a);
 
+            cout << "Enter the duedate: ";
+            getline(cin, d);
+
+            cout << "Enter duration: ";
+            cin >> duration;
+
+            libraryItems[count++] = new DVD(t, a, d, duration);
+            cout << "DVD Added Successfully!"<<endl;
+        }
+        else if (choice == 3)
+        {
+            string t, a, d;
+            int issuenumber;
+            cout << "Enter the title: ";
+            cin.ignore();
+            getline(cin, t);
+
+            cout << "Enter the Author name: ";
+            getline(cin, a);
+
+            cout << "Enter the duedate: ";
+            getline(cin, d);
+
+            cout << "Enter the Issue Number: ";
+            cin >> issuenumber;
+
+            libraryItems[count++] = new Magazine(t, a, d, issuenumber);
+            cout << "Magazine Added Succesfully!"<<endl;
+        }
+        else if (choice == 4)
+        {
+            if (count == 0)
+                cout << "Library is empty!";
+            for (int i = 0; i < count; i++)
+            {
+                libraryItems[i]->displayDetails();
+            }
+        }
+        else if (choice == 5 || choice == 6)
+        {
+            string t;
+            cout << "Enter Title: ";
+            cin.ignore();
+            getline(cin, t);
+
+            for (int i = 0; i < count; i++)
+            {
+                if (choice == 5)
+                    libraryItems[i]->checkOut();
+                else
+                    libraryItems[i]->returnItem();
+            }
+        }
+
+    } while (choice != 0);
 
     return 0;
 }
